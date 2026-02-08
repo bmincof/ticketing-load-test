@@ -1,6 +1,8 @@
-package com.study.loadtest.infra.jpa;
+package com.study.loadtest.infra.jpa.event;
 
 import com.study.loadtest.domain.event.model.EventStatus;
+import com.study.loadtest.infra.jpa.BaseJpaEntity;
+import com.study.loadtest.infra.jpa.order.OrderJpaEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,11 +10,15 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "event_table")
 public class EventJpaEntity extends BaseJpaEntity {

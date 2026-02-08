@@ -1,6 +1,9 @@
-package com.study.loadtest.infra.jpa;
+package com.study.loadtest.infra.jpa.order;
 
 import com.study.loadtest.domain.order.model.OrderStatus;
+import com.study.loadtest.infra.jpa.BaseJpaEntity;
+import com.study.loadtest.infra.jpa.payment.PaymentJpaEntity;
+import com.study.loadtest.infra.jpa.event.EventJpaEntity;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

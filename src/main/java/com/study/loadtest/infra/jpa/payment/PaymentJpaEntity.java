@@ -1,6 +1,8 @@
-package com.study.loadtest.infra.jpa;
+package com.study.loadtest.infra.jpa.payment;
 
 import com.study.loadtest.domain.payment.model.PaymentStatus;
+import com.study.loadtest.infra.jpa.BaseJpaEntity;
+import com.study.loadtest.infra.jpa.order.OrderJpaEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
