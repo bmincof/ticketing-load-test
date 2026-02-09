@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController("/api/v1/events")
-public class EventController {
+public class EventControllerV1 {
 
     private final EventService eventService;
 
