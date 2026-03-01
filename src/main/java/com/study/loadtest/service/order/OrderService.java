@@ -5,6 +5,7 @@ import com.study.loadtest.domain.order.model.Order;
 import com.study.loadtest.domain.order.model.OrderStatus;
 import com.study.loadtest.repository.event.EventRepository;
 import com.study.loadtest.repository.order.OrderRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final EventRepository eventRepository;
 
-    // 트랜잭션
+    @Transactional
     public Order createOrder(Long eventId, Integer quantity) {
         // 남은 티켓 수량 차감
         Event event = eventRepository.findById(eventId);
