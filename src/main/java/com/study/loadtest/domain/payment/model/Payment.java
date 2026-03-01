@@ -1,8 +1,7 @@
-package com.study.loadtest.infra.jpa.payment;
+package com.study.loadtest.domain.payment.model;
 
-import com.study.loadtest.domain.payment.model.PaymentStatus;
-import com.study.loadtest.infra.jpa.BaseJpaEntity;
-import com.study.loadtest.infra.jpa.order.OrderJpaEntity;
+import com.study.loadtest.repository.BaseJpaEntity;
+import com.study.loadtest.domain.order.model.Order;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -16,11 +15,11 @@ import java.time.OffsetDateTime;
 
 @Entity
 @Table(name = "payment_table")
-public class PaymentJpaEntity extends BaseJpaEntity {
+public class Payment extends BaseJpaEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id", nullable = false)
-    private OrderJpaEntity order;
+    private Order order;
 
     @Column(nullable = false)
     private String provider;

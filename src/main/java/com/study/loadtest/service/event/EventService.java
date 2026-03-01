@@ -1,8 +1,7 @@
 package com.study.loadtest.service.event;
 
 import com.study.loadtest.domain.event.model.Event;
-import com.study.loadtest.domain.event.repository.EventRepository;
-import com.study.loadtest.shared.exception.NoSuchEntityException;
+import com.study.loadtest.repository.event.EventRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +12,6 @@ public class EventService {
     private final EventRepository eventRepository;
 
     public Event readEvent(Long id) {
-        return eventRepository.findById(id)
-                .orElseThrow(() -> new NoSuchEntityException(Event.class, id));
+        return eventRepository.findById(id);
     }
 }

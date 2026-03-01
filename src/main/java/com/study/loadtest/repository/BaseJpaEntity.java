@@ -1,4 +1,4 @@
-package com.study.loadtest.infra.jpa;
+package com.study.loadtest.repository;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
