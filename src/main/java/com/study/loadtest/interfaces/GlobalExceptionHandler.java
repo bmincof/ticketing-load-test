@@ -1,5 +1,6 @@
-package com.study.loadtest.shared.exception;
+package com.study.loadtest.interfaces;
 
+import com.study.loadtest.shared.exception.NoSuchEntityException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
