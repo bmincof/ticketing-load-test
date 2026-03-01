@@ -1,5 +1,6 @@
 package com.study.loadtest.domain.event.model;
 
+import com.study.loadtest.domain.event.exception.SoldOutException;
 import com.study.loadtest.domain.order.model.Order;
 import com.study.loadtest.repository.BaseJpaEntity;
 import jakarta.persistence.CascadeType;
@@ -43,4 +44,11 @@ public class Event extends BaseJpaEntity {
 
     @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders = new ArrayList<>();
+
+    public void decreaseQuantity(Integer quantity) {
+        if (this.remainingQuantity < quantity) {
+            throw new SoldOutException(this.getId());
+        }
+        this.remainingQuantity -= quantity;
+    }
 }
