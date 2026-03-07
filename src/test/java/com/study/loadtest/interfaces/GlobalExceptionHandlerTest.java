@@ -1,5 +1,6 @@
 package com.study.loadtest.interfaces;
 
+import com.study.loadtest.domain.event.exception.SoldOutException;
 import com.study.loadtest.domain.event.model.Event;
 import com.study.loadtest.shared.exception.NoSuchEntityException;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,6 +39,14 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
+    @DisplayName("SoldOutException 발생 시 409 Conflict와 메시지를 반환한다")
+    void handleSoldOutException() throws Exception {
+        mockMvc.perform(get("/test/sold-out"))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").value("이벤트 재고 소진 (id=1)"));
+    }
+
+    @Test
     @DisplayName("일반 Exception 발생 시 500 Internal Server Error를 반환한다")
     void handleGeneralException() throws Exception {
         mockMvc.perform(get("/test/error"))
@@ -50,6 +59,11 @@ class GlobalExceptionHandlerTest {
         @GetMapping("/test/not-found")
         public void throwNotFound() {
             throw new NoSuchEntityException(Event.class, 1L);
+        }
+
+        @GetMapping("/test/sold-out")
+        public void throwSoldOut() {
+            throw new SoldOutException(1L);
         }
 
         @GetMapping("/test/error")

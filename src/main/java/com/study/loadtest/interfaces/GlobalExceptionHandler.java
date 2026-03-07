@@ -1,5 +1,6 @@
 package com.study.loadtest.interfaces;
 
+import com.study.loadtest.domain.event.exception.SoldOutException;
 import com.study.loadtest.shared.exception.NoSuchEntityException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,6 +22,12 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoSuchEntityException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleEntityNotFound(NoSuchEntityException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(SoldOutException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleSoldOut(SoldOutException e) {
         return new ErrorResponse(e.getMessage());
     }
 
