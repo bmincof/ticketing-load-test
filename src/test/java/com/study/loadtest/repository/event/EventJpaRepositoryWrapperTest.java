@@ -28,13 +28,14 @@ class EventJpaRepositoryWrapperTest {
     @DisplayName("존재하는 ID로 조회하면 Event 객체를 반환한다")
     void findById_success() {
         // given
-        Event event = new Event();
-        event.setName("테스트 이벤트");
-        event.setStartAt(OffsetDateTime.now());
-        event.setEndAt(OffsetDateTime.now().plusDays(1));
-        event.setTotalQuantity(100);
-        event.setRemainingQuantity(100);
-        event.setStatus(EventStatus.ACTIVE);
+        Event event = Event.builder()
+                .name("테스트 이벤트")
+                .startAt(OffsetDateTime.now())
+                .endAt(OffsetDateTime.now().plusDays(1))
+                .totalQuantity(100)
+                .remainingQuantity(100)
+                .status(EventStatus.ACTIVE)
+                .build();
         Event saved = jpaRepository.save(event);
 
         // when

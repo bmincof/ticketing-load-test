@@ -31,8 +31,10 @@ class EventControllerV1Test {
     void getEvent_success() throws Exception {
         // given
         Long eventId = 1L;
-        Event event = new Event();
-        event.setName("테스트 이벤트");
+        Event event = Event.builder()
+                .id(eventId)
+                .name("테스트 이벤트")
+                .build();
         given(eventService.readEvent(eventId)).willReturn(event);
 
         // when & then

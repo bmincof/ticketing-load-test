@@ -27,7 +27,8 @@ class OrderServiceTest {
 
     @Mock
     private OrderRepository orderRepository;
-    @Mock private EventRepository eventRepository;
+    @Mock
+    private EventRepository eventRepository;
 
     @Test
     @DisplayName("주문 생성 성공: 재고가 차감되고 주문이 저장되어야 한다")
@@ -36,8 +37,10 @@ class OrderServiceTest {
         Long eventId = 1L;
         int requestQuantity = 2;
 
-        Event event = new Event();
-        event.setRemainingQuantity(10); // 초기 재고 10개
+        Event event = Event.builder()
+                .id(eventId)
+                .remainingQuantity(10)  // 초기 재고 10개
+                .build();
 
         given(eventRepository.findById(eventId)).willReturn(event);
         // save 호출 시 전달받은 객체를 그대로 반환하도록 설정
@@ -58,9 +61,10 @@ class OrderServiceTest {
     void createOrder_fail_soldOut() {
         // given
         Long eventId = 1L;
-        Event event = new Event();
-        event.setId(eventId);
-        event.setRemainingQuantity(1); // 재고 1개
+        Event event = Event.builder()
+                .id(eventId)
+                .remainingQuantity(1)   // 재고 1개
+                .build();
 
         given(eventRepository.findById(eventId)).willReturn(event);
 

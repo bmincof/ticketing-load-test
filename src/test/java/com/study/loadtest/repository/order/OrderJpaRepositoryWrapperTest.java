@@ -30,13 +30,14 @@ class OrderJpaRepositoryWrapperTest {
     @DisplayName("Order 객체를 저장하면 DB에 정상적으로 영속화되어야 한다")
     void save_success() {
         // given: 1. 외래키 제약조건을 위해 Event 먼저 생성 및 저장
-        Event event = new Event();
-        event.setName("테스트 이벤트");
-        event.setStartAt(OffsetDateTime.now());
-        event.setEndAt(OffsetDateTime.now().plusDays(1));
-        event.setTotalQuantity(100);
-        event.setRemainingQuantity(100);
-        event.setStatus(EventStatus.ACTIVE);
+        Event event = Event.builder()
+                .name("테스트 이벤트")
+                .startAt(OffsetDateTime.now())
+                .endAt(OffsetDateTime.now().plusDays(1))
+                .totalQuantity(100)
+                .remainingQuantity(100)
+                .status(EventStatus.ACTIVE)
+                .build();
         Event savedEvent = eventJpaRepository.save(event);
 
         // given: 2. Order 객체 생성 (Builder 사용)

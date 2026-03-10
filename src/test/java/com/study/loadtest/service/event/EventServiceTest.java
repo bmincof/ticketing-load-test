@@ -27,8 +27,10 @@ class EventServiceTest {
     void readEvent_success() {
         // given
         Long eventId = 1L;
-        Event mockEvent = new Event();
-        mockEvent.setName("테스트 이벤트");
+        Event mockEvent = Event.builder()
+                .id(eventId)
+                .name("테스트 이벤트")
+                .build();
 
         // Mock 객체의 동작 정의 (Stubbing)
         given(eventRepository.findById(eventId)).willReturn(mockEvent);
