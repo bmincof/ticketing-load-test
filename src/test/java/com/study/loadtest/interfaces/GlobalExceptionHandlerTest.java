@@ -2,6 +2,7 @@ package com.study.loadtest.interfaces;
 
 import com.study.loadtest.domain.event.exception.SoldOutException;
 import com.study.loadtest.domain.event.model.Event;
+import com.study.loadtest.shared.exception.InvalidStateException;
 import com.study.loadtest.shared.exception.NoSuchEntityException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -47,6 +48,14 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
+    @DisplayName("InvalidStateException 발생 시 409 Conflict와 메시지를 반환한다")
+    void handleInvalidStateException() throws Exception {
+        mockMvc.perform(get("/test/invalid-state"))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message").value("엔티티[Event] 유효하지 않은 상태 (id=1, state=SOLD_OUT)"));
+    }
+
+    @Test
     @DisplayName("일반 Exception 발생 시 500 Internal Server Error를 반환한다")
     void handleGeneralException() throws Exception {
         mockMvc.perform(get("/test/error"))
@@ -64,6 +73,11 @@ class GlobalExceptionHandlerTest {
         @GetMapping("/test/sold-out")
         public void throwSoldOut() {
             throw new SoldOutException(1L);
+        }
+
+        @GetMapping("/test/invalid-state")
+        public void throwInvalidState() {
+            throw new InvalidStateException(Event.class, 1L, "SOLD_OUT");
         }
 
         @GetMapping("/test/error")
