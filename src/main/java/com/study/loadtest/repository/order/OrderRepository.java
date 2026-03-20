@@ -5,4 +5,6 @@ import com.study.loadtest.domain.order.model.Order;
 public interface OrderRepository {
 
     Order save(Order order);
+
+    Order findById(Long id);
 }
