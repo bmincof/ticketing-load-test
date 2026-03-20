@@ -1,120 +1,134 @@
-# 1. 이벤트 조회
-GET /events/{eventId}
+## Event API (Read Only)
 
-설명
-이벤트 판매 상태 및 잔여 수량 조회
+### GET /events/{id}
 
-Response
-```
+**Response 200**
+
+```json
 {
-  "eventId": "evt_123",
-  "status": "OPEN",
-  "remainingQuantity": 12,
-  "price": 50000
+  "id": 1,
+  "name": "EVENT NAME",
+  "startAt": "2026-03-21T10:00:00+09:00",
+  "endAt": "2026-03-21T18:00:00+09:00",
+  "totalQuantity": 200,
+  "remainingQuantity": 120,
+  "status": "ACTIVE"
 }
 ```
 
-에러
-- 404 이벤트 없음
-- 410 판매 종료
+`status`: `ACTIVE` | `SOLD_OUT`
 
-# 2. 오더 생성 (재고 홀드)
-POST /orders
+**Status Codes**
 
-설명
-재고를 선점하고 결제 유효 시간이 있는 Order 생성
+* 200 OK
+* 404 Not Found
 
-Request
-```
+---
+
+## Order API
+
+### POST /orders
+
+**Request**
+
+```json
 {
-  "eventId": "evt_123"
+  "eventId": 1,
+  "quantity": 1
 }
 ```
 
-Response (201)
-```
+**Response 201**
+
+```json
 {
-  "orderId": "ord_456",
-  "status": "PENDING",
-  "expiresAt": "2026-01-10T12:05:00Z"
+  "id": 1001,
+  "buyerToken": "550e8400-e29b-41d4-a716-446655440000",
+  "expiresAt": "2026-03-21T12:10:00Z",
+  "status": "CREATED"
 }
 ```
 
-에러
+`status`: `CREATED` | `PAID` | `CANCELED` | `EXPIRED`
 
-- 409 재고 없음
-- 410 이벤트 종료
+**Status Codes**
 
-# 3. 결제 준비
-POST /payments/ready
+* 201 Created → Success
+* 409 Conflict → SOLD_OUT
+* 404 Not Found → Event missing
 
-설명
-결제 시도 단위를 생성하고 PG 요청 정보 반환
+---
 
-Request
-```
+### GET /orders/{id}
+
+**Response 200**
+
+```json
 {
-  "orderId": "ord_456"
+  "orderId": 1001,
+  "status": "PAID"
 }
 ```
 
-Response
-```
+**Status Codes**
+
+* 200 OK
+* 404 Not Found
+* 410 Gone (optional expired)
+
+---
+
+## Payment API (Mock PG)
+
+### POST /payments
+
+**Request**
+
+```json
 {
-  "paymentId": "pay_789",
-  "pg": "KAKAOPAY",
-  "amount": 50000,
-  "redirectUrl": "https://pg.example.com/pay",
-  "expiresAt": "2026-01-10T12:05:00Z"
+  "orderId": 1001,
+  "amount": 10000
 }
 ```
 
-에러
+**Response 201**
 
-- 404 order 없음
-- 409 order 상태 불일치
-- 410 order 만료
-
-# 4. 결제 승인 Webhook
-POST /payments/webhook
-
-설명
-PG → 서버 결제 결과 통보
-
-Request (예시)
-```
+```json
 {
-  "provider": "KAKAOPAY",
-  "providerPaymentId": "pg_abc",
-  "merchantUid": "pay_789",
-  "status": "SUCCESS",
-  "amount": 50000
+  "paymentId": 5001,
+  "status": "PENDING"
 }
 ```
 
-Response
-```
-200 OK
-```
+**Status Codes**
 
-실패 상황에서도 항상 200 반환 (PG 재시도 방지 목적)
+* 201 Created
+* 404 Not Found → Order missing
+* 409 Conflict → Invalid order state
 
-# 5. 주문 상태 조회
-GET /orders/{orderId}
+---
 
-설명
-최종 주문/결제 결과 조회
+### POST /payments/{id}/resolve
 
-Response
-```
+**Request**
+
+```json
 {
-  "orderId": "ord_456",
-  "status": "PAID",
-  "eventId": "evt_123",
-  "payment": {
-    "paymentId": "pay_789",
-    "status": "SUCCESS",
-    "provider": "KAKAOPAY"
-  }
+  "result": "APPROVED" // or FAILED
 }
 ```
+
+**Response 200**
+
+```json
+{
+  "paymentId": 5001,
+  "status": "APPROVED"
+}
+```
+
+**Status Codes**
+
+* 200 OK
+* 409 Conflict → Already resolved
+* 404 Not Found
