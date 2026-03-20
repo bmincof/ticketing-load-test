@@ -22,7 +22,7 @@ public class PaymentControllerV1 {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public PaymentResponseV1 createPayment(@RequestBody PaymentCreateRequestV1 request) {
-        Payment payment = paymentService.createPayment(request.getOrderId(), request.getAmount());
+        Payment payment = paymentService.createPayment(request.getOrderId(), request.getAmount(), request.getProvider());
         return PaymentResponseV1.from(payment);
     }
 }

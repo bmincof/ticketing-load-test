@@ -13,4 +13,5 @@ public class PaymentCreateRequestV1 {
 
     private Long orderId;
     private Integer amount;
+    private String provider;
 }

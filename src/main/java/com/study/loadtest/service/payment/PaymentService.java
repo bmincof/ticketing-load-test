@@ -21,7 +21,7 @@ public class PaymentService {
     private final PaymentRepository paymentRepository;
 
     @Transactional
-    public Payment createPayment(Long orderId, Integer amount) {
+    public Payment createPayment(Long orderId, Integer amount, String provider) {
         Order order = orderRepository.findById(orderId);
 
         if (order.getStatus() != OrderStatus.CREATED) {
@@ -30,7 +30,7 @@ public class PaymentService {
 
         Payment payment = Payment.builder()
                 .order(order)
-                .provider("mock")
+                .provider(provider)
                 .providerPaymentId(UUID.randomUUID().toString())
                 .amount(amount)
                 .status(PaymentStatus.PENDING)
