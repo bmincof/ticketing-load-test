@@ -6,6 +6,7 @@ import com.study.loadtest.domain.order.model.Order;
 import com.study.loadtest.domain.order.model.OrderStatus;
 import com.study.loadtest.repository.event.EventRepository;
 import com.study.loadtest.repository.order.OrderRepository;
+import com.study.loadtest.shared.exception.NoSuchEntityException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -71,5 +72,37 @@ class OrderServiceTest {
         // when & then
         assertThatThrownBy(() -> orderService.createOrder(eventId, 5))
                 .isInstanceOf(SoldOutException.class);
+    }
+
+    @Test
+    @DisplayName("주문 조회 성공: 존재하는 주문 id로 조회하면 주문을 반환한다")
+    void getOrder_success() {
+        // given
+        Long orderId = 1L;
+        Order order = Order.builder()
+                .status(OrderStatus.PAID)
+                .build();
+        order.setId(orderId);
+
+        given(orderRepository.findById(orderId)).willReturn(order);
+
+        // when
+        Order result = orderService.getOrder(orderId);
+
+        // then
+        assertThat(result.getId()).isEqualTo(orderId);
+        assertThat(result.getStatus()).isEqualTo(OrderStatus.PAID);
+    }
+
+    @Test
+    @DisplayName("주문 조회 실패: 존재하지 않는 주문 id로 조회하면 NoSuchEntityException이 발생한다")
+    void getOrder_fail_notFound() {
+        // given
+        Long orderId = 999L;
+        given(orderRepository.findById(orderId)).willThrow(new NoSuchEntityException(Order.class, orderId));
+
+        // when & then
+        assertThatThrownBy(() -> orderService.getOrder(orderId))
+                .isInstanceOf(NoSuchEntityException.class);
     }
 }
