@@ -2,10 +2,12 @@ package com.study.loadtest.interfaces.payment.v1;
 
 import com.study.loadtest.domain.payment.model.Payment;
 import com.study.loadtest.interfaces.payment.v1.request.PaymentCreateRequestV1;
+import com.study.loadtest.interfaces.payment.v1.request.PaymentResolveRequestV1;
 import com.study.loadtest.interfaces.payment.v1.response.PaymentResponseV1;
 import com.study.loadtest.service.payment.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +25,13 @@ public class PaymentControllerV1 {
     @PostMapping
     public PaymentResponseV1 createPayment(@RequestBody PaymentCreateRequestV1 request) {
         Payment payment = paymentService.createPayment(request.getOrderId(), request.getAmount(), request.getProvider());
+        return PaymentResponseV1.from(payment);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping("/{id}/resolve")
+    public PaymentResponseV1 resolvePayment(@PathVariable Long id, @RequestBody PaymentResolveRequestV1 request) {
+        Payment payment = paymentService.resolve(id, request.getResult());
         return PaymentResponseV1.from(payment);
     }
 }

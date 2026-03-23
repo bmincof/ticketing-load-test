@@ -58,4 +58,8 @@ public class Event extends BaseJpaEntity {
         }
         this.remainingQuantity -= quantity;
     }
+
+    public void increaseQuantity(Integer quantity) {
+        this.remainingQuantity += quantity;
+    }
 }

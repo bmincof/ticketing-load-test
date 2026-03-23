@@ -11,6 +11,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -37,5 +38,27 @@ public class PaymentService {
                 .build();
 
         return paymentRepository.save(payment);
+    }
+
+    @Transactional
+    public Payment resolve(Long paymentId, PaymentStatus result) {
+        Payment payment = paymentRepository.findById(paymentId);
+
+        if (payment.getStatus() != PaymentStatus.PENDING) {
+            throw new InvalidStateException(Payment.class, paymentId, payment.getStatus().name());
+        }
+
+        Order order = payment.getOrder();
+
+        if (result == PaymentStatus.APPROVED) {
+            order.setStatus(OrderStatus.PAID);
+            payment.setApprovedAt(OffsetDateTime.now());
+        } else {
+            order.getEvent().increaseQuantity(order.getQuantity());
+            order.setStatus(OrderStatus.CANCELED);
+        }
+
+        payment.setStatus(result);
+        return payment;
     }
 }
